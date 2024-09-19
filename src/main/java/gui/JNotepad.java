@@ -4,9 +4,14 @@
  */
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -14,6 +19,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 /**
@@ -27,16 +33,21 @@ public class JNotepad extends JFrame {
     private JMenuItem itemNew, ItemOpen, itemSave, itemSaveAs, itemPageSetup, itemPrint, itemExit, itemZoomin, itemZoomOut, itemRestoredeFaultZoom;
     private JMenuItem itemUndo, itemCopy, itemPaste, itemDelete, itemSearchwithBing, itemFind, itemFindNext, itemGoto, itemSelectAll, itemTimeDelete, itemCut, itemWordWrap, itemFont, itemStatusBar, itemViewHelp, itemSendFeedback, itemAboutNotepad, itemFindPrevious, itemReplace;
     private JTextArea txteditor;
+    private JToolBar toolbar;
+    private JButton btNew, btSave, btOpen;
+    int size = 20;
 
     public JNotepad(String title) {
 
         super(title);
+        CreateMenu();
+        CreateToolbar();
+        processEvent();
         txteditor = new JTextArea();
         JScrollPane editor = new JScrollPane(txteditor);
         add(editor);
-        txteditor.setFont(new Font("Arial", Font.PLAIN, 20));
-        CreateMenu();
-
+        txteditor.setFont(new Font("Arial", Font.PLAIN, size));
+        txteditor.setLineWrap(true);
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -123,6 +134,42 @@ public class JNotepad extends JFrame {
     public static void main(String[] args) {
         JNotepad notepad = new JNotepad("demo Notepad");
         notepad.setVisible(true);
+    }
+
+    public void processEvent() {
+        itemZoomin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                size += 4;
+                txteditor.setFont(new Font("Arial", Font.PLAIN, size));
+            }
+        });
+        itemZoomOut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                size -= 4;
+                txteditor.setFont(new Font("Arial", Font.PLAIN, size));
+            }
+        });
+        
+    }
+
+    private void CreateToolbar() {
+        //Tạo thanh công cụ Toobar
+        toolbar = new JToolBar();
+        //add các nút lệnh vào thanh công cụ
+        toolbar.add(btNew = new JButton("New"));
+        toolbar.add(btOpen = new JButton("Open"));
+        toolbar.add(btSave = new JButton("Save"));
+        //set icon cho jbutton
+        btNew.setIcon(new ImageIcon(this.getClass().getResource("/img/new.png")));
+        btSave.setIcon(new ImageIcon(this.getClass().getResource("/img/Save.png")));
+        btOpen.setIcon(new ImageIcon(this.getClass().getResource("/img/open.png")));
+
+        add(toolbar, BorderLayout.NORTH);
+
     }
 
 }
