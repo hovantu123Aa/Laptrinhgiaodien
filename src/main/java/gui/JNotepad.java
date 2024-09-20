@@ -9,10 +9,12 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
 import java.util.HashSet;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -21,6 +23,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -145,6 +150,8 @@ public class JNotepad extends JFrame {
                 txteditor.setFont(new Font("Arial", Font.PLAIN, size));
             }
         });
+        
+        
         itemZoomOut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -153,9 +160,62 @@ public class JNotepad extends JFrame {
                 txteditor.setFont(new Font("Arial", Font.PLAIN, size));
             }
         });
-        
-    }
+        //xử lí open
+         ItemOpen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+                SaveFile();
+            }
+        });
+         itemSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                SaveFile();
+            }
+        });
+    }
+    
+    
+    private void SaveFile(){
+        JFileChooser dlgfile=new JFileChooser();
+        if(dlgfile.showSaveDialog(this)==JFileChooser.APPROVE_OPTION)
+        {
+            try {
+                //Tạo luồng liên kết tập tin cần lưu
+                FileOutputStream fos=new FileOutputStream(dlgfile.getSelectedFile());
+                //ghi nội dung của txtEditter ra file 
+                fos.write(txteditor.getText().getBytes());
+                fos.close();   
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "lỗi ghi file");
+            }
+        
+        }
+    }
+    
+     private void OpenFile(){
+        JFileChooser dlgfile=new JFileChooser();
+        if(dlgfile.showSaveDialog(this)==JFileChooser.APPROVE_OPTION)
+        {
+            try {
+                //Tạo luồng liên kết tập tin cần lưu
+                FileInputStream fis=new FileInputStream(dlgfile.getSelectedFile());
+                //độc tất cả file lưu vào mảng byte
+                byte[] B=new byte[fis.available()];
+                fis.read(B);
+                txteditor.setText(new String(B));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "lỗi độc file");
+            }
+        
+        }
+    
+    }   
+        
+        
+        
     private void CreateToolbar() {
         //Tạo thanh công cụ Toobar
         toolbar = new JToolBar();
