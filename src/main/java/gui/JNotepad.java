@@ -134,6 +134,7 @@ public class JNotepad extends JFrame {
         itemRestoredeFaultZoom.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
         //gắn thực đơn vào cửa sổ
         setJMenuBar(Mbar);
+
     }
 
     public static void main(String[] args) {
@@ -150,8 +151,7 @@ public class JNotepad extends JFrame {
                 txteditor.setFont(new Font("Arial", Font.PLAIN, size));
             }
         });
-        
-        
+
         itemZoomOut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -161,61 +161,79 @@ public class JNotepad extends JFrame {
             }
         });
         //xử lí open
-         ItemOpen.addActionListener(new ActionListener() {
+        ItemOpen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 SaveFile();
             }
         });
-         itemSave.addActionListener(new ActionListener() {
+        itemSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 SaveFile();
             }
         });
+         itemExit.addActionListener((ActionEvent e) -> {
+            if (JOptionPane.showConfirmDialog(null, "Are you sure to Exit") == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+
+        itemCut.addActionListener(e -> txteditor.cut());
+        itemCopy.addActionListener(e -> txteditor.copy());
+        itemPaste.addActionListener(e -> txteditor.paste());
+        itemDelete.addActionListener(e -> delete());
     }
-    
-    
-    private void SaveFile(){
-        JFileChooser dlgfile=new JFileChooser();
-        if(dlgfile.showSaveDialog(this)==JFileChooser.APPROVE_OPTION)
-        {
+
+    private void SaveFile() {
+        JFileChooser dlgfile = new JFileChooser();
+        if (dlgfile.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 //Tạo luồng liên kết tập tin cần lưu
-                FileOutputStream fos=new FileOutputStream(dlgfile.getSelectedFile());
+                FileOutputStream fos = new FileOutputStream(dlgfile.getSelectedFile());
                 //ghi nội dung của txtEditter ra file 
                 fos.write(txteditor.getText().getBytes());
-                fos.close();   
+                fos.close();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "lỗi ghi file");
             }
-        
+
         }
     }
-    
-     private void OpenFile(){
-        JFileChooser dlgfile=new JFileChooser();
-        if(dlgfile.showSaveDialog(this)==JFileChooser.APPROVE_OPTION)
-        {
+
+    private void OpenFile() {
+        JFileChooser dlgfile = new JFileChooser();
+        if (dlgfile.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 //Tạo luồng liên kết tập tin cần lưu
-                FileInputStream fis=new FileInputStream(dlgfile.getSelectedFile());
+                FileInputStream fis = new FileInputStream(dlgfile.getSelectedFile());
                 //độc tất cả file lưu vào mảng byte
-                byte[] B=new byte[fis.available()];
+                byte[] B = new byte[fis.available()];
                 fis.read(B);
                 txteditor.setText(new String(B));
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "lỗi độc file");
             }
-        
+
         }
-    
-    }   
-        
-        
-        
+
+    }
+
+
+
+    private void delete() {
+        // Nhận vị trí bắt đầu và kết thúc của văn bản đã chọn
+        int start = txteditor.getSelectionStart();
+        int end = txteditor.getSelectionEnd();
+
+        // Nếu có một số văn bản được chọn, hãy xóa nó
+        if (start != end) {
+            txteditor.replaceRange("", start, end);
+        }
+    }
+
     private void CreateToolbar() {
         //Tạo thanh công cụ Toobar
         toolbar = new JToolBar();
